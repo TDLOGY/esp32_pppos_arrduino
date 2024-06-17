@@ -5,7 +5,7 @@
 
 // WaveShare SIM7600 HW Flow Control
 #define PPP_MODEM_RST     15
-#define PPP_MODEM_RST_LOW true  //active HIGH
+#define PPP_MODEM_RST_LOW false  //active HIGH
 #define PPP_MODEM_TX      17
 #define PPP_MODEM_RX      16
 #define PPP_MODEM_RTS     -1
