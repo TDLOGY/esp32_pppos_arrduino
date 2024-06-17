@@ -1,15 +1,15 @@
 #include <PPP.h>
 
-#define PPP_MODEM_APN "internet"
+#define PPP_MODEM_APN ""
 #define PPP_MODEM_PIN NULL  // or NULL
 
 // WaveShare SIM7600 HW Flow Control
 #define PPP_MODEM_RST     15
-#define PPP_MODEM_RST_LOW true  //active HIGH
+#define PPP_MODEM_RST_LOW false  //active HIGH
 #define PPP_MODEM_TX      17
 #define PPP_MODEM_RX      16
-#define PPP_MODEM_RTS     26
-#define PPP_MODEM_CTS     27
+#define PPP_MODEM_RTS     -1
+#define PPP_MODEM_CTS     -1
 #define PPP_MODEM_FC      ESP_MODEM_FLOW_CONTROL_NONE
 #define PPP_MODEM_MODEL   PPP_MODEM_SIM7600
 
@@ -52,6 +52,7 @@ void testClient(const char *host, uint16_t port) {
 }
 
 void setup() {
+  delay(2000);
   Serial.begin(115200);
 
   // Listen for modem events
@@ -63,7 +64,7 @@ void setup() {
   PPP.setResetPin(PPP_MODEM_RST, PPP_MODEM_RST_LOW);
   PPP.setPins(PPP_MODEM_TX, PPP_MODEM_RX, PPP_MODEM_RTS, PPP_MODEM_CTS, PPP_MODEM_FC);
 
-  Serial.println("Starting the modem. It might take a while!");
+  Serial.println("\nStarting the modem. It might take a while!");
   PPP.begin(PPP_MODEM_MODEL);
 
   Serial.print("Manufacturer: ");
@@ -80,7 +81,7 @@ void setup() {
     Serial.print("Waiting to connect to network");
     while (!attached && ((++i) < 600)) {
       Serial.print(".");
-      delay(100);
+      delay(200);
       attached = PPP.attached();
     }
     Serial.print((millis() - s) / 1000.0, 1);

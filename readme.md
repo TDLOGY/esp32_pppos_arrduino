@@ -15,4 +15,36 @@ Pin | #Function | #Note
 --- | --- | ---|
 IO16 | UART_RX | ESP32_RX
 IO17 | UART_TX | ESP32_TX
-IO15 | RESET | (Low to reset)
+IO15 | RESET | (High to reset Modem)
+
+# Log
+```
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:1
+load:0x3fff0030,len:1288
+load:0x40078000,len:13872
+load:0x40080400,len:4
+ho 8 tail 4 room 4
+load:0x40080404,len:3048
+entry 0x40080590
+Starting the modem. It might take a while!
+PPP Started
+Manufacturer: INCORPORATED
+Model: A7680C-LAAS
+IMEI: 861210050118077
+Waiting to connect to network.............2.7s
+Attached: 1
+State: 1
+Operator: 45204
+IMSI: 452040926788582
+RSSI: 31
+BER: 99
+NetMode: 8
+Switching to data mode...
+PPP Got IP
+Connected to internet!PPP Connected
+
+Connection Success
+```
