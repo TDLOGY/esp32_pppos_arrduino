@@ -5,7 +5,7 @@
 
 // WaveShare SIM7600 HW Flow Control
 #define PPP_MODEM_RST     15
-#define PPP_MODEM_RST_LOW false  //active HIGH
+#define PPP_MODEM_RST_LOW true  //active HIGH
 #define PPP_MODEM_TX      17
 #define PPP_MODEM_RX      16
 #define PPP_MODEM_RTS     -1
@@ -51,8 +51,11 @@ void testClient(const char *host, uint16_t port) {
   client.stop();
 }
 
+#define LED_PIN   2
+
 void setup() {
-  delay(2000);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, HIGH);
   Serial.begin(115200);
 
   // Listen for modem events
@@ -64,6 +67,7 @@ void setup() {
   PPP.setResetPin(PPP_MODEM_RST, PPP_MODEM_RST_LOW);
   PPP.setPins(PPP_MODEM_TX, PPP_MODEM_RX, PPP_MODEM_RTS, PPP_MODEM_CTS, PPP_MODEM_FC);
 
+  delay(2000);
   Serial.println("\nStarting the modem. It might take a while!");
   PPP.begin(PPP_MODEM_MODEL);
 
@@ -79,10 +83,11 @@ void setup() {
     int i = 0;
     unsigned int s = millis();
     Serial.print("Waiting to connect to network");
-    while (!attached && ((++i) < 600)) {
+    while (!attached && ((++i) < 60)) {
       Serial.print(".");
-      delay(200);
+      delay(1000);
       attached = PPP.attached();
+      digitalWrite(LED_PIN, !digitalRead(LED_PIN));
     }
     Serial.print((millis() - s) / 1000.0, 1);
     Serial.println("s");
@@ -121,8 +126,13 @@ void setup() {
 }
 
 void loop() {
-  if (PPP.connected()) {
-    testClient("google.com", 80);
+  static int cnt = 0;
+  if(++cnt > 100){
+    cnt = 0;
+    if (PPP.connected()) {
+      testClient("google.com", 80);
+    }
   }
-  delay(20000);
+  delay(200);
+  digitalWrite(LED_PIN, !digitalRead(LED_PIN));
 }
