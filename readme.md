@@ -4,10 +4,7 @@ This is example from ESP32 Arduino PPP
 Original Link: https://github.com/espressif/arduino-esp32/tree/master/libraries/PPP/examples/PPP_Basic
 
 # Note
-
-Before build please install latest ESP32 Arduino version:
-
-![ESP32 Board](/esp32_board.jpg)
+Before build please install latest ESP32 Arduino version (From 3.x.x)
 
 # Pin out
 
