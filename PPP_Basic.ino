@@ -1,4 +1,5 @@
 #include <PPP.h>
+#include <PubSubClient.h>
 
 #define PPP_MODEM_APN ""
 #define PPP_MODEM_PIN NULL  // or NULL
@@ -12,16 +13,6 @@
 #define PPP_MODEM_CTS     -1
 #define PPP_MODEM_FC      ESP_MODEM_FLOW_CONTROL_NONE
 #define PPP_MODEM_MODEL   PPP_MODEM_SIM7600
-
-// SIM800 basic module with just TX,RX and RST
-// #define PPP_MODEM_RST     0
-// #define PPP_MODEM_RST_LOW true //active LOW
-// #define PPP_MODEM_TX      2
-// #define PPP_MODEM_RX      19
-// #define PPP_MODEM_RTS     -1
-// #define PPP_MODEM_CTS     -1
-// #define PPP_MODEM_FC      ESP_MODEM_FLOW_CONTROL_NONE
-// #define PPP_MODEM_MODEL   PPP_MODEM_SIM800
 
 void onEvent(arduino_event_id_t event, arduino_event_info_t info) {
   switch (event) {
@@ -47,8 +38,47 @@ void testClient(const char *host, uint16_t port) {
     client.read();  //Serial.write(client.read());
   }
 
-  Serial.println("Connection Success");
+  Serial.printf("Connection Success to %s:%d OK\n", host, port);
   client.stop();
+}
+
+void mqttCallback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
+
+#define MQTT_BROKER "test.mosquitto.org"
+#define MQTT_PORT 1883
+#define MQTT_CLIENT_ID "YourDeviceID"
+#define MQTT_TOPIC_PUB "test/topic/pub"
+#define MQTT_TOPIC_SUB "test/topic/sub"
+
+NetworkClient espClient;
+PubSubClient mqttClient(espClient);
+
+void MQTT_Init() {
+  mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
+  mqttClient.setCallback(mqttCallback);
+  
+  Serial.print("Attempting MQTT connection to ");
+  Serial.print(MQTT_BROKER);
+  Serial.print(":");
+  Serial.println(MQTT_PORT);
+  
+  if (mqttClient.connect(MQTT_CLIENT_ID)) {
+    Serial.println("Connected to MQTT broker");
+    mqttClient.subscribe(MQTT_TOPIC_SUB);
+  } else {
+    Serial.print("MQTT connection failed, rc=");
+    Serial.println(mqttClient.state());
+  }  
+  
+  mqttClient.loop();
 }
 
 #define LED_PIN   2
@@ -123,11 +153,13 @@ void setup() {
   } else {
     Serial.println("Failed to connect to network!");
   }
+
+  MQTT_Init();
 }
 
 void loop() {
   static int cnt = 0;
-  if(++cnt > 100){
+  if(++cnt > 10){
     cnt = 0;
     if (PPP.connected()) {
       testClient("google.com", 80);
