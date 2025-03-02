@@ -32,19 +32,21 @@ entry 0x40080590
 Starting the modem. It might take a while!
 PPP Started
 Manufacturer: INCORPORATED
-Model: A7680C-LAAS
-IMEI: 861210050118077
-Waiting to connect to network.............2.7s
+Model: A7600C
+IMEI: 861779065998608
+Waiting to connect to network...................23.6s
 Attached: 1
 State: 1
 Operator: 45204
-IMSI: 452040926788582
+IMSI: 452048836643596
 RSSI: 31
 BER: 99
 NetMode: 8
 Switching to data mode...
 PPP Got IP
-Connected to internet!PPP Connected
-
-Connection Success
+Connected to internet!
+PPP Connected
+Attempting MQTT connection to test.mosquitto.org:1883
+Connected to MQTT broker
+Connection Success to google.com:80 OK
 ```
